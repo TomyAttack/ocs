@@ -1,0 +1,25 @@
+CREATE PROCEDURE `ocs`.`SaveProcedure`(
+    IN sp_idworkflow_approvals INT(11),
+    IN sp_idtransactions INT(11),
+    IN sp_value DECIMAL(15,2)
+)
+BEGIN 
+	DECLARE sp_nik INT(11);
+    DECLARE sp_created_at DATETIME;
+    DECLARE sp_updated_at DATETIME;
+
+    SET sp_created_at = NOW();
+    SET sp_updated_at = NOW();
+
+        INSERT INTO need_approvals(idworkflow_approvals,idtransactions,nik,name,email,position,level, created_at, updated_at)
+        SELECT 
+            (SELECT idworkflow_approvals FROM workflow_approvals WHERE idworkflow_approvals = sp_idworkflow_approvals),
+            sp_idtransactions,
+            (SELECT nik FROM workflow_approvals WHERE idworkflow_approvals = sp_idworkflow_approvals),
+            (SELECT name FROM workflow_approvals WHERE idworkflow_approvals = sp_idworkflow_approvals),
+            (SELECT email FROM workflow_approvals WHERE idworkflow_approvals = sp_idworkflow_approvals),
+            (SELECT position FROM workflow_approvals WHERE idworkflow_approvals = sp_idworkflow_approvals),
+            sp_value,
+            sp_created_at,
+            sp_updated_at;
+END;
